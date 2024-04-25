@@ -13,3 +13,28 @@ class QuoteService {
     }
   }
 }
+/*
+import 'package:cloud_firestore/cloud_firestore.dart';
+import '../models/quote.dart';
+
+class QuoteService {
+  final CollectionReference _quotesCollection = FirebaseFirestore.instance.collection('quotes');
+
+  Future<void> addQuoteToFavorites(Quote quote) async {
+    await _quotesCollection.add({
+      'text': quote.text,
+      'author': quote.author,
+      'timestamp': DateTime.now(),
+    });
+  }
+
+  Stream<List<Quote>> getFavoriteQuotes() {
+    return _quotesCollection.orderBy('timestamp', descending: true).snapshots().map((snapshot) =>
+        snapshot.docs.map((doc) => Quote(
+          text: doc['text'],
+          author: doc['author'],
+        )).toList());
+  }
+}
+
+*/

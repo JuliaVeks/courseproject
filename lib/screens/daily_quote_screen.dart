@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import '../services/favorite_quotes.dart';
 import '../widgets/daily_quote_card.dart';
 import '../models/quote.dart';
 import '../services/quote_service.dart';
+import 'favorite_quotes_screen.dart'; // Импортируем экран с избранными цитатами
 
 class DailyQuoteScreen extends StatefulWidget {
   @override
@@ -18,6 +20,10 @@ class _DailyQuoteScreenState extends State<DailyQuoteScreen> {
     _quoteFuture = _quoteService.fetchQuote();
   }
 
+  void _addToFavorites(Quote quote) async {
+    await FavoriteQuotes.toggleFavorite(quote.text);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,8 +31,8 @@ class _DailyQuoteScreenState extends State<DailyQuoteScreen> {
         title: Text(
           'Цитата дня',
           style: TextStyle(
-            color: Color(0xFF877DA1), // Фиолетовый цвет
-            fontWeight: FontWeight.w300, // Тонкий шрифт
+            color: Color(0xFF877DA1), // Фиолетовый цвет Матириал Дизайн
+            fontWeight: FontWeight.w300, // Тонкий шрифт Roboto
           ),
         ),
       ),
@@ -39,10 +45,22 @@ class _DailyQuoteScreenState extends State<DailyQuoteScreen> {
             } else if (snapshot.hasError) {
               return Text('Ошибка загрузки цитаты');
             } else {
-              return DailyQuoteCard(quote: snapshot.data!);
+              return DailyQuoteCard(
+                quote: snapshot.data!,
+                onFavoritePressed: () => _addToFavorites(snapshot.data!),
+              );
             }
           },
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => FavoriteQuotesScreen()),
+          );
+        },
+        child: Icon(Icons.favorite), // Иконка для кнопки перехода на второй экран
       ),
     );
   }

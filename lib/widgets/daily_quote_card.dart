@@ -3,8 +3,9 @@ import '../models/quote.dart';
 
 class DailyQuoteCard extends StatelessWidget {
   final Quote quote;
+  final VoidCallback onFavoritePressed; // Добавляем параметр для функции обратного вызова
 
-  const DailyQuoteCard({Key? key, required this.quote}) : super(key: key);
+  const DailyQuoteCard({Key? key, required this.quote, required this.onFavoritePressed}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,26 +28,45 @@ class DailyQuoteCard extends StatelessWidget {
                 style: TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
               ),
               SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  TextButton(
-                    onPressed: () {}, // Нет обработчика нажатия
-                    child: Text(
-                      'Добавить в избранное',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(
-                        Theme.of(context).primaryColor,
-                      ),
-                    ),
+              InkWell(
+                onTap: () {
+                  // Вызываем функцию обратного вызова и добавляем анимацию
+                  onFavoritePressed();
+                  _animateToFavorite(context);
+                },
+                borderRadius: BorderRadius.circular(4),
+                splashColor: Colors.white.withOpacity(0.5), // Цвет всплеска при нажатии
+                hoverColor: Colors.white.withOpacity(0.5), // Цвет ховера
+                child: Container(
+                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColor,
+                    borderRadius: BorderRadius.circular(4),
                   ),
-                ],
+                  child: Text(
+                    'Добавить в избранное',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
               ),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  // Анимация для добавления цитаты в избранное
+  void _animateToFavorite(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Цитата добавлена в избранное'),
+        duration: Duration(seconds: 1),
+        backgroundColor: Theme.of(context).primaryColor, // Цвет фона
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        elevation: 4,
+        margin: EdgeInsets.all(16),
       ),
     );
   }
